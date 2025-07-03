@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -6,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Download, Shield, AlertTriangle, CheckCircle, Code, FileText } from 'lucide-react';
+import { Download, Shield, AlertTriangle, CheckCircle, Code, FileText, Bot } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import InteractiveAuditDemo from '@/components/InteractiveAuditDemo';
+import AIAnalysisChat from '@/components/AIAnalysisChat';
 
 const Audit = () => {
   const [code, setCode] = useState('');
@@ -171,14 +171,62 @@ contract VulnerableBank {
         </div>
 
         <Tabs defaultValue="audit" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="audit">Contract Audit</TabsTrigger>
+            <TabsTrigger value="ai-chat">AI Analysis</TabsTrigger>
             <TabsTrigger value="demo">Interactive Demo</TabsTrigger>
           </TabsList>
 
           <TabsContent value="demo">
             <div className="max-w-4xl mx-auto">
               <InteractiveAuditDemo />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="ai-chat">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <Card className="bg-gray-800/50 border-gray-700">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center">
+                      <Code className="mr-2 h-5 w-5" />
+                      Contract Code
+                    </CardTitle>
+                    <CardDescription className="text-gray-400">
+                      Paste your contract code here for AI analysis
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex gap-2 mb-4">
+                      <Button 
+                        onClick={loadSample}
+                        variant="outline"
+                        size="sm"
+                        className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                      >
+                        Load Sample Contract
+                      </Button>
+                      <Button 
+                        onClick={() => setCode('')}
+                        variant="outline"
+                        size="sm"
+                        className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                      >
+                        Clear
+                      </Button>
+                    </div>
+                    
+                    <Textarea
+                      placeholder="pragma solidity ^0.8.0;&#10;&#10;contract MyContract {&#10;    // Your contract code here&#10;}"
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                      className="min-h-[400px] bg-gray-900 border-gray-600 text-gray-100 font-mono text-sm"
+                    />
+                  </CardContent>
+                </Card>
+
+                <AIAnalysisChat contractCode={code} />
+              </div>
             </div>
           </TabsContent>
 
