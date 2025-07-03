@@ -20,22 +20,50 @@ serve(async (req) => {
       throw new Error('GEMINI_API_KEY not configured');
     }
 
-    const analysisPrompt = `Analyze this smart contract code for security vulnerabilities and provide real-time insights:
+    const analysisPrompt = `Sebagai AI Security Analyst untuk smart contract Web3, analisis kode kontrak berikut untuk kerentanan keamanan dan berikan wawasan real-time:
 
-Contract Code:
+Kode Kontrak:
 ${contractCode}
 
-User Query: ${prompt}
+Pertanyaan User: ${prompt}
 
-Please provide:
-1. Security risk assessment
-2. Specific vulnerabilities found
-3. Recommended fixes
-4. Gas optimization suggestions
-5. Best practices recommendations
+Silakan berikan analisis komprehensif dalam bahasa Indonesia dengan:
 
-Format your response in a structured way with clear sections.`;
+1. **Penilaian Risiko Keamanan**
+   - Identifikasi semua kerentanan potensial
+   - Tingkat severity (Critical, High, Medium, Low)
+   - Analisis dampak dan exploitability
 
+2. **Kerentanan Spesifik yang Ditemukan**
+   - Reentrancy attacks
+   - Integer overflow/underflow
+   - Access control issues
+   - Front-running vulnerabilities
+   - Gas griefing attacks
+   - Timestamp dependence
+   - DoS attacks
+
+3. **Rekomendasi Perbaikan**
+   - Solusi konkret untuk setiap kerentanan
+   - Best practices implementation
+   - Penggunaan library keamanan (OpenZeppelin, dll)
+
+4. **Optimasi Gas**
+   - Identifikasi bagian kode yang boros gas
+   - Saran optimasi struktur data
+   - Rekomendasi pattern yang lebih efisien
+
+5. **Best Practices**
+   - Coding standards untuk Solidity
+   - Security patterns yang harus diikuti
+   - Testing dan audit recommendations
+
+Format respons Anda dalam bentuk terstruktur dan mudah dipahami. Berikan penjelasan yang detail namun praktis untuk developer. Jika ada kerentanan kritis, berikan prioritas tinggi dan solusi segera.
+
+Jika user menanyakan hal spesifik, fokuskan jawaban pada pertanyaan tersebut sambil tetap memberikan konteks keamanan yang relevan.`;
+
+    console.log('Sending request to Gemini API...');
+    
     const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
       method: 'POST',
       headers: {
@@ -51,29 +79,72 @@ Format your response in a structured way with clear sections.`;
               }
             ]
           }
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 2048,
+        },
+        safetySettings: [
+          {
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_HATE_SPEECH",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          }
         ]
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`Gemini API error: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Gemini API error:', response.status, errorText);
+      throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    const aiResponse = data.candidates[0]?.content?.parts[0]?.text || 'No response from AI';
+    console.log('Gemini API response received successfully');
+    
+    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Maaf, tidak ada respons dari AI saat ini. Silakan coba lagi.';
 
-    return new Response(JSON.stringify({ 
+    // Enhanced response with metadata
+    const enhancedResponse = {
       analysis: aiResponse,
-      timestamp: new Date().toISOString()
-    }), {
+      timestamp: new Date().toISOString(),
+      model: 'gemini-2.0-flash',
+      contractAnalyzed: contractCode.length > 0,
+      queryType: prompt.toLowerCase().includes('kerentanan') ? 'vulnerability' : 
+                 prompt.toLowerCase().includes('gas') ? 'optimization' : 
+                 prompt.toLowerCase().includes('audit') ? 'audit' : 'general',
+      responseTime: Date.now()
+    };
+
+    return new Response(JSON.stringify(enhancedResponse), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Error in gemini-analysis function:', error);
-    return new Response(JSON.stringify({ 
-      error: 'Analysis failed', 
-      details: error.message 
-    }), {
+    
+    // Enhanced error response
+    const errorResponse = {
+      error: 'Analisis gagal',
+      details: error.message,
+      timestamp: new Date().toISOString(),
+      suggestion: 'Silakan periksa koneksi internet Anda dan coba lagi. Jika masalah berlanjut, hubungi support.'
+    };
+    
+    return new Response(JSON.stringify(errorResponse), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

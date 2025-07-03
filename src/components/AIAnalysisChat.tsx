@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, Bot, User, Loader2 } from 'lucide-react';
+import { Send, Bot, User, Loader2, Shield, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Message {
@@ -29,7 +29,7 @@ const AIAnalysisChat = ({ contractCode }: AIAnalysisChatProps) => {
     setMessages([{
       id: '1',
       type: 'ai',
-      content: 'Hello! I\'m your AI security analyst. I can help you analyze your smart contract for vulnerabilities, gas optimization, and best practices. What would you like me to examine?',
+      content: 'Halo! Saya adalah AI Security Analyst Anda. Saya dapat membantu menganalisis smart contract untuk kerentanan keamanan, optimasi gas, dan best practices. Apa yang ingin Anda periksa?',
       timestamp: new Date()
     }]);
   }, []);
@@ -37,7 +37,10 @@ const AIAnalysisChat = ({ contractCode }: AIAnalysisChatProps) => {
   useEffect(() => {
     // Auto-scroll to bottom when new messages are added
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+      const scrollElement = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollElement) {
+        scrollElement.scrollTop = scrollElement.scrollHeight;
+      }
     }
   }, [messages]);
 
@@ -68,7 +71,7 @@ const AIAnalysisChat = ({ contractCode }: AIAnalysisChatProps) => {
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
-        content: data.analysis || 'Sorry, I couldn\'t analyze that right now.',
+        content: data.analysis || 'Maaf, saya tidak dapat menganalisis permintaan itu saat ini.',
         timestamp: new Date()
       };
 
@@ -78,7 +81,7 @@ const AIAnalysisChat = ({ contractCode }: AIAnalysisChatProps) => {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
-        content: 'Sorry, I encountered an error while analyzing your request. Please try again.',
+        content: 'Maaf, terjadi kesalahan saat menganalisis permintaan Anda. Silakan coba lagi.',
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -95,31 +98,37 @@ const AIAnalysisChat = ({ contractCode }: AIAnalysisChatProps) => {
   };
 
   return (
-    <Card className="bg-gray-800/50 border-gray-700 h-[500px] flex flex-col">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-white flex items-center">
-          <Bot className="mr-2 h-5 w-5 text-blue-400" />
+    <Card className="bg-gray-900/80 backdrop-blur-sm border-gray-700 h-[600px] flex flex-col shadow-2xl">
+      <CardHeader className="pb-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-t-lg">
+        <CardTitle className="text-white flex items-center text-lg">
+          <div className="flex items-center justify-center w-8 h-8 bg-blue-500 rounded-full mr-3">
+            <Bot className="h-4 w-4 text-white" />
+          </div>
           AI Security Analyst
+          <div className="ml-auto flex items-center space-x-1">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span className="text-green-400 text-xs">Online</span>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col p-0">
-        <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
+        <ScrollArea className="flex-1 px-4 py-2" ref={scrollAreaRef}>
           <div className="space-y-4 pb-4">
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}
               >
                 <div
-                  className={`flex max-w-[80%] ${
+                  className={`flex max-w-[85%] sm:max-w-[80%] ${
                     message.type === 'user' ? 'flex-row-reverse' : 'flex-row'
                   }`}
                 >
                   <div
                     className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
                       message.type === 'user' 
-                        ? 'bg-blue-600 ml-2' 
-                        : 'bg-gray-600 mr-2'
+                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 ml-2 shadow-lg' 
+                        : 'bg-gradient-to-r from-gray-600 to-gray-700 mr-2 shadow-lg'
                     }`}
                   >
                     {message.type === 'user' ? (
@@ -129,30 +138,30 @@ const AIAnalysisChat = ({ contractCode }: AIAnalysisChatProps) => {
                     )}
                   </div>
                   <div
-                    className={`rounded-lg px-3 py-2 ${
+                    className={`rounded-2xl px-4 py-3 shadow-lg ${
                       message.type === 'user'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-700 text-gray-100'
+                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white'
+                        : 'bg-gray-800/90 text-gray-100 border border-gray-700'
                     }`}
                   >
-                    <div className="text-sm whitespace-pre-wrap">{message.content}</div>
-                    <div className="text-xs opacity-70 mt-1">
-                      {message.timestamp.toLocaleTimeString()}
+                    <div className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</div>
+                    <div className="text-xs opacity-70 mt-2">
+                      {message.timestamp.toLocaleTimeString('id-ID')}
                     </div>
                   </div>
                 </div>
               </div>
             ))}
             {isLoading && (
-              <div className="flex justify-start">
+              <div className="flex justify-start animate-fade-in">
                 <div className="flex">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gray-600 mr-2">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-r from-gray-600 to-gray-700 mr-2 shadow-lg">
                     <Bot className="h-4 w-4 text-white" />
                   </div>
-                  <div className="rounded-lg px-3 py-2 bg-gray-700 text-gray-100">
+                  <div className="rounded-2xl px-4 py-3 bg-gray-800/90 text-gray-100 border border-gray-700 shadow-lg">
                     <div className="flex items-center space-x-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span className="text-sm">Analyzing...</span>
+                      <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
+                      <span className="text-sm">Menganalisis...</span>
                     </div>
                   </div>
                 </div>
@@ -160,20 +169,20 @@ const AIAnalysisChat = ({ contractCode }: AIAnalysisChatProps) => {
             )}
           </div>
         </ScrollArea>
-        <div className="border-t border-gray-600 p-4">
+        <div className="border-t border-gray-700 p-4 bg-gray-900/50">
           <div className="flex space-x-2">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask about security vulnerabilities, gas optimization, or best practices..."
-              className="bg-gray-900 border-gray-600 text-gray-100 flex-1"
+              placeholder="Tanyakan tentang kerentanan keamanan, optimasi gas, atau best practices..."
+              className="bg-gray-800/80 border-gray-600 text-gray-100 flex-1 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={isLoading}
             />
             <Button
               onClick={sendMessage}
               disabled={!input.trim() || isLoading}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl px-6 shadow-lg transition-all duration-200 hover:scale-105"
             >
               <Send className="h-4 w-4" />
             </Button>
