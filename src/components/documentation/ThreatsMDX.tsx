@@ -51,21 +51,21 @@ const ThreatsMDX = () => {
   ];
 
   return (
-    <div className="space-y-6 text-white">
-      <div className="flex items-center space-x-3 mb-6">
-        <AlertTriangle className="h-6 w-6 text-red-400" />
-        <h3 className="text-xl font-semibold">Ancaman dan Serangan Umum</h3>
+    <div className="space-y-4 sm:space-y-6 text-white">
+      <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
+        <AlertTriangle className="h-5 w-5 sm:h-6 sm:w-6 text-red-400 flex-shrink-0" />
+        <h3 className="text-lg sm:text-xl font-semibold">Ancaman dan Serangan Umum</h3>
       </div>
 
-      <div className="grid gap-4 md:gap-6">
+      <div className="grid gap-3 sm:gap-4 md:gap-6">
         {threats.map((threat, index) => (
-          <div key={index} className="bg-red-900/20 border border-red-500/20 p-4 md:p-6 rounded-lg hover:border-red-500/40 transition-all duration-300">
-            <div className="flex items-start space-x-3 mb-3">
-              <threat.icon className="h-5 w-5 text-red-400 mt-1 flex-shrink-0" />
-              <h4 className="font-semibold text-red-400 text-sm md:text-base">{threat.title}</h4>
+          <div key={index} className="bg-red-900/20 border border-red-500/20 p-3 sm:p-4 md:p-6 rounded-lg hover:border-red-500/40 transition-all duration-300">
+            <div className="flex items-start space-x-2 sm:space-x-3 mb-2 sm:mb-3">
+              <threat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-red-400 mt-1 flex-shrink-0" />
+              <h4 className="font-semibold text-red-400 text-sm sm:text-base">{threat.title}</h4>
             </div>
-            <p className="text-gray-300 mb-3 text-sm md:text-base">{threat.description}</p>
-            <ul className="text-gray-300 space-y-1 list-disc list-inside text-sm">
+            <p className="text-gray-300 mb-2 sm:mb-3 text-xs sm:text-sm md:text-base">{threat.description}</p>
+            <ul className="text-gray-300 space-y-1 list-disc list-inside text-xs sm:text-sm">
               {threat.tips.map((tip, tipIndex) => (
                 <li key={tipIndex}>{tip}</li>
               ))}

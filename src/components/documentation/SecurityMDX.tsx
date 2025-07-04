@@ -4,19 +4,19 @@ import { Lock, Key, Shield, HardDrive } from 'lucide-react';
 
 const SecurityMDX = () => {
   return (
-    <div className="space-y-6 text-white">
-      <div className="flex items-center space-x-3 mb-6">
-        <Lock className="h-6 w-6 text-green-400" />
-        <h3 className="text-xl font-semibold">Prinsip Keamanan Web3</h3>
+    <div className="space-y-4 sm:space-y-6 text-white">
+      <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
+        <Lock className="h-5 w-5 sm:h-6 sm:w-6 text-green-400 flex-shrink-0" />
+        <h3 className="text-lg sm:text-xl font-semibold">Prinsip Keamanan Web3</h3>
       </div>
 
-      <div className="grid gap-4 md:gap-6">
-        <div className="bg-gray-800/50 p-4 md:p-6 rounded-lg border border-gray-700/50 hover:border-green-500/30 transition-all duration-300">
-          <div className="flex items-start space-x-3 mb-3">
-            <Key className="h-5 w-5 text-green-400 mt-1 flex-shrink-0" />
-            <h4 className="font-semibold text-green-400 text-sm md:text-base">Keamanan Private Key</h4>
+      <div className="grid gap-3 sm:gap-4 md:gap-6">
+        <div className="bg-gray-800/50 p-3 sm:p-4 md:p-6 rounded-lg border border-gray-700/50 hover:border-green-500/30 transition-all duration-300">
+          <div className="flex items-start space-x-2 sm:space-x-3 mb-2 sm:mb-3">
+            <Key className="h-4 w-4 sm:h-5 sm:w-5 text-green-400 mt-1 flex-shrink-0" />
+            <h4 className="font-semibold text-green-400 text-sm sm:text-base">Keamanan Private Key</h4>
           </div>
-          <ul className="text-gray-300 space-y-2 list-disc list-inside text-sm md:text-base">
+          <ul className="text-gray-300 space-y-1 sm:space-y-2 list-disc list-inside text-xs sm:text-sm md:text-base">
             <li>Private key adalah kunci akses ke wallet dan aset digital Anda</li>
             <li>Jangan pernah membagikan private key kepada siapapun</li>
             <li>Simpan private key di tempat yang aman dan offline</li>
@@ -25,12 +25,12 @@ const SecurityMDX = () => {
           </ul>
         </div>
 
-        <div className="bg-gray-800/50 p-4 md:p-6 rounded-lg border border-gray-700/50 hover:border-green-500/30 transition-all duration-300">
-          <div className="flex items-start space-x-3 mb-3">
-            <Shield className="h-5 w-5 text-green-400 mt-1 flex-shrink-0" />
-            <h4 className="font-semibold text-green-400 text-sm md:text-base">Seed Phrase Security</h4>
+        <div className="bg-gray-800/50 p-3 sm:p-4 md:p-6 rounded-lg border border-gray-700/50 hover:border-green-500/30 transition-all duration-300">
+          <div className="flex items-start space-x-2 sm:space-x-3 mb-2 sm:mb-3">
+            <Shield className="h-4 w-4 sm:h-5 sm:w-5 text-green-400 mt-1 flex-shrink-0" />
+            <h4 className="font-semibold text-green-400 text-sm sm:text-base">Seed Phrase Security</h4>
           </div>
-          <ul className="text-gray-300 space-y-2 list-disc list-inside text-sm md:text-base">
+          <ul className="text-gray-300 space-y-1 sm:space-y-2 list-disc list-inside text-xs sm:text-sm md:text-base">
             <li>Seed phrase (mnemonic phrase) adalah cara recovery wallet Anda</li>
             <li>Tulis seed phrase di kertas, jangan simpan digital</li>
             <li>Jangan foto atau screenshot seed phrase</li>
@@ -39,12 +39,12 @@ const SecurityMDX = () => {
           </ul>
         </div>
 
-        <div className="bg-gray-800/50 p-4 md:p-6 rounded-lg border border-gray-700/50 hover:border-green-500/30 transition-all duration-300">
-          <div className="flex items-start space-x-3 mb-3">
-            <HardDrive className="h-5 w-5 text-green-400 mt-1 flex-shrink-0" />
-            <h4 className="font-semibold text-green-400 text-sm md:text-base">Multi-Signature Wallets</h4>
+        <div className="bg-gray-800/50 p-3 sm:p-4 md:p-6 rounded-lg border border-gray-700/50 hover:border-green-500/30 transition-all duration-300">
+          <div className="flex items-start space-x-2 sm:space-x-3 mb-2 sm:mb-3">
+            <HardDrive className="h-4 w-4 sm:h-5 sm:w-5 text-green-400 mt-1 flex-shrink-0" />
+            <h4 className="font-semibold text-green-400 text-sm sm:text-base">Multi-Signature Wallets</h4>
           </div>
-          <p className="text-gray-300 leading-relaxed text-sm md:text-base">
+          <p className="text-gray-300 leading-relaxed text-xs sm:text-sm md:text-base">
             Gunakan multi-sig wallet untuk aset berharga tinggi. Multi-sig memerlukan 
             beberapa signature untuk mengotorisasi transaksi, memberikan lapisan keamanan tambahan.
           </p>
