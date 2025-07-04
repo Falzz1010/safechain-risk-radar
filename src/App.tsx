@@ -10,6 +10,7 @@ import Analyzer from "./pages/Analyzer";
 import Visualization from "./pages/Visualization";
 import Dashboard from "./pages/Dashboard";
 import Education from "./pages/Education";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/visualization" element={<Visualization />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/education" element={<Education />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

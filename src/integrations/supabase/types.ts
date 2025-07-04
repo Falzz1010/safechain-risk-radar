@@ -9,7 +9,93 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      audit_history: {
+        Row: {
+          audit_score: string
+          audit_status: string
+          contract_code: string | null
+          contract_name: string
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+          vulnerability_count: number | null
+        }
+        Insert: {
+          audit_score: string
+          audit_status: string
+          contract_code?: string | null
+          contract_name: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          vulnerability_count?: number | null
+        }
+        Update: {
+          audit_score?: string
+          audit_status?: string
+          contract_code?: string | null
+          contract_name?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          vulnerability_count?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      watchlist: {
+        Row: {
+          address: string
+          created_at: string
+          id: string
+          label: string
+          risk_level: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          id?: string
+          label: string
+          risk_level?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          id?: string
+          label?: string
+          risk_level?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

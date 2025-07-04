@@ -141,9 +141,9 @@ const Index = () => {
                 Pelajari Keamanan Web3
               </Button>
             </Link>
-            <Link to="/dashboard" className="w-full sm:w-auto">
+            <Link to="/auth" className="w-full sm:w-auto">
               <Button size="lg" variant="outline" className="w-full sm:w-auto border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white px-6 sm:px-8 py-3 text-sm sm:text-base">
-                Lihat Dashboard
+                Login / Sign Up
               </Button>
             </Link>
           </div>
