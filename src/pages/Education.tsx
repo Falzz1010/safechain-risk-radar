@@ -1,22 +1,11 @@
 
-import React, { useState, memo, lazy, Suspense } from 'react';
+import React, { useState, memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertTriangle, BookOpen, Shield, CheckCircle, TrendingUp, Users, Lock, Eye, FileText, Zap, Loader2 } from 'lucide-react';
+import { AlertTriangle, BookOpen, Shield, CheckCircle, TrendingUp, Users, Lock, Eye, FileText, Zap } from 'lucide-react';
 import Navbar from '@/components/Navbar';
-
-// Lazy loading untuk komponen berat
-const PhishingSimulation = lazy(() => import('@/components/PhishingSimulation'));
-const SecurityQuiz = lazy(() => import('@/components/SecurityQuiz'));
-
-const LoadingSpinner = () => (
-  <div className="flex items-center justify-center py-8">
-    <Loader2 className="h-6 w-6 animate-spin text-blue-400" />
-    <span className="ml-2 text-gray-400 text-sm">Memuat...</span>
-  </div>
-);
 
 // Memoized components untuk performa
 const ScamSignCard = memo(({ sign, index }: { sign: any; index: number }) => {
@@ -241,7 +230,7 @@ const Education = () => {
             </CardContent>
           </Card>
 
-          {/* Enhanced Security Quiz - Lazy loaded */}
+          {/* Security Quiz */}
           <Card className="bg-gray-900/80 backdrop-blur-sm border-gray-700 shadow-2xl">
             <CardHeader className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-t-lg p-4 sm:p-6">
               <CardTitle className="text-white flex items-center text-lg sm:text-xl">
@@ -253,12 +242,17 @@ const Education = () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
-              <Suspense fallback={<LoadingSpinner />}>
-                {/* Quiz content bisa di-lazy load jika diperlukan */}
-                <div className="text-center text-gray-400 text-sm">
-                  Quiz akan segera tersedia...
+              <div className="text-center space-y-4">
+                <div className="p-6 bg-gray-800/50 rounded-lg border border-gray-700/50">
+                  <BookOpen className="h-12 w-12 text-purple-400 mx-auto mb-4" />
+                  <p className="text-gray-300 text-sm mb-4">
+                    Quiz interaktif untuk menguji pemahaman Anda tentang keamanan Web3 akan segera tersedia.
+                  </p>
+                  <p className="text-gray-400 text-xs">
+                    Fitur ini sedang dalam pengembangan untuk memberikan pengalaman belajar yang lebih interaktif.
+                  </p>
                 </div>
-              </Suspense>
+              </div>
             </CardContent>
           </Card>
         </div>
