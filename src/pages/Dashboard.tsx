@@ -4,12 +4,15 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, Wallet, Trash2, Eye, Plus, Loader2, Activity, AlertCircle, Shield, TrendingUp, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import Navbar from '@/components/Navbar';
 import { useToast } from '@/hooks/use-toast';
+import SmartContractAudit from '@/components/SmartContractAudit';
+import WalletRiskAnalyzer from '@/components/WalletRiskAnalyzer';
 
 interface AuditRecord {
   id: string;
@@ -257,8 +260,8 @@ const Dashboard = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">Dashboard</h1>
-            <p className="text-gray-400 text-sm sm:text-base">Selamat datang kembali! Berikut ringkasan keamanan Anda.</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">SafeChain Dashboard</h1>
+            <p className="text-gray-400 text-sm sm:text-base">Keamanan Web3 dengan AI-Powered Analysis</p>
           </div>
           <Button 
             onClick={handleLogout} 
@@ -313,7 +316,7 @@ const Dashboard = () => {
             <CardContent className="p-3 sm:p-4 md:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm text-gray-400">Status</p>
+                  <p className="text-xs sm:text-sm text-gray-400">AI Status</p>
                   <div className="flex items-center gap-1">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                     <p className="text-xs sm:text-sm text-green-400 font-medium">Live</p>
@@ -325,135 +328,162 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
-          {/* Audit History */}
-          <Card className="bg-gray-800/50 border-gray-700">
-            <CardHeader className="pb-3 sm:pb-4">
-              <CardTitle className="text-white text-lg sm:text-xl">Riwayat Audit</CardTitle>
-              <CardDescription className="text-gray-400 text-sm sm:text-base">
-                Audit smart contract terbaru Anda
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-0 sm:p-6 sm:pt-0">
-              {auditHistory.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow className="border-gray-700">
-                        <TableHead className="text-gray-300 text-xs sm:text-sm">Contract</TableHead>
-                        <TableHead className="text-gray-300 text-xs sm:text-sm hidden sm:table-cell">Tanggal</TableHead>
-                        <TableHead className="text-gray-300 text-xs sm:text-sm">Score</TableHead>
-                        <TableHead className="text-gray-300 text-xs sm:text-sm w-16">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {auditHistory.map((audit) => (
-                        <TableRow key={audit.id} className="border-gray-700">
-                          <TableCell className="text-gray-100 text-xs sm:text-sm">
-                            <div>
-                              <p className="font-medium">{audit.contract_name}</p>
-                              <p className="text-xs text-gray-400 sm:hidden">{formatDate(audit.created_at)}</p>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-gray-400 text-xs sm:text-sm hidden sm:table-cell">
-                            {formatDate(audit.created_at)}
-                          </TableCell>
-                          <TableCell>
-                            <Badge className={`${getScoreColor(audit.audit_score)} text-white text-xs`}>
-                              {audit.audit_score}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Button size="sm" variant="ghost" className="text-blue-400 hover:text-blue-300 h-8 w-8 p-0">
-                              <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Shield className="h-12 w-12 text-gray-600 mx-auto mb-4" />
-                  <p className="text-gray-400 text-sm sm:text-base">Belum ada riwayat audit.</p>
-                  <p className="text-gray-500 text-xs sm:text-sm mt-2">Mulai dengan mengaudit smart contract!</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+        <Tabs defaultValue="tools" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-800/50 border-gray-700">
+            <TabsTrigger value="tools" className="text-gray-300 data-[state=active]:text-white">
+              AI Tools
+            </TabsTrigger>
+            <TabsTrigger value="history" className="text-gray-300 data-[state=active]:text-white">
+              Audit History
+            </TabsTrigger>
+            <TabsTrigger value="watchlist" className="text-gray-300 data-[state=active]:text-white">
+              Watchlist
+            </TabsTrigger>
+          </TabsList>
 
-          {/* Watchlist */}
-          <Card className="bg-gray-800/50 border-gray-700">
-            <CardHeader className="pb-3 sm:pb-4">
-              <CardTitle className="text-white text-lg sm:text-xl">Watchlist</CardTitle>
-              <CardDescription className="text-gray-400 text-sm sm:text-base">
-                Monitor wallet dan token untuk aktivitas mencurigakan
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-3">
-                <Input
-                  placeholder="0x... alamat wallet atau token"
-                  value={watchlistAddress}
-                  onChange={(e) => setWatchlistAddress(e.target.value)}
-                  className="bg-gray-900 border-gray-600 text-gray-100 text-sm"
-                />
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Label (opsional)"
-                    value={watchlistLabel}
-                    onChange={(e) => setWatchlistLabel(e.target.value)}
-                    className="bg-gray-900 border-gray-600 text-gray-100 text-sm flex-1"
-                  />
-                  <Button 
-                    onClick={addToWatchlist} 
-                    disabled={addingToWatchlist || !watchlistAddress.trim()}
-                    className="bg-purple-600 hover:bg-purple-700 px-3 sm:px-4"
-                  >
-                    {addingToWatchlist ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Plus className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-              
-              <div className="space-y-3 max-h-96 overflow-y-auto">
-                {watchlist.length > 0 ? (
-                  watchlist.map((item) => (
-                    <div key={item.id} className="flex items-center justify-between p-3 bg-gray-900/50 rounded-lg border border-gray-600 hover:border-gray-500 transition-colors">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white font-mono text-xs sm:text-sm truncate">{item.address}</p>
-                        <p className="text-gray-400 text-xs">{item.label}</p>
-                      </div>
-                      <div className="flex items-center gap-2 ml-2">
-                        <Badge variant={getRiskColor(item.risk_level)} className="text-xs">
-                          {item.risk_level}
-                        </Badge>
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          onClick={() => removeFromWatchlist(item.id)}
-                          className="text-red-400 hover:text-red-300 h-8 w-8 p-0"
-                        >
-                          <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))
+          <TabsContent value="tools" className="space-y-6">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <SmartContractAudit />
+              <WalletRiskAnalyzer />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="history">
+            <Card className="bg-gray-800/50 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white text-lg sm:text-xl">Riwayat Audit Smart Contract</CardTitle>
+                <CardDescription className="text-gray-400 text-sm sm:text-base">
+                  Hasil audit smart contract yang telah dilakukan
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0 sm:p-6 sm:pt-0">
+                {auditHistory.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="border-gray-700">
+                          <TableHead className="text-gray-300 text-xs sm:text-sm">Contract</TableHead>
+                          <TableHead className="text-gray-300 text-xs sm:text-sm hidden sm:table-cell">Tanggal</TableHead>
+                          <TableHead className="text-gray-300 text-xs sm:text-sm">Score</TableHead>
+                          <TableHead className="text-gray-300 text-xs sm:text-sm">Status</TableHead>
+                          <TableHead className="text-gray-300 text-xs sm:text-sm w-16">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {auditHistory.map((audit) => (
+                          <TableRow key={audit.id} className="border-gray-700">
+                            <TableCell className="text-gray-100 text-xs sm:text-sm">
+                              <div>
+                                <p className="font-medium">{audit.contract_name}</p>
+                                <p className="text-xs text-gray-400 sm:hidden">{formatDate(audit.created_at)}</p>
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-gray-400 text-xs sm:text-sm hidden sm:table-cell">
+                              {formatDate(audit.created_at)}
+                            </TableCell>
+                            <TableCell>
+                              <Badge className={`${getScoreColor(audit.audit_score)} text-white text-xs`}>
+                                {audit.audit_score}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={audit.audit_status === 'Passed' ? 'outline' : 'destructive'} className="text-xs">
+                                {audit.audit_status}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Button size="sm" variant="ghost" className="text-blue-400 hover:text-blue-300 h-8 w-8 p-0">
+                                <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 ) : (
                   <div className="text-center py-8">
-                    <Eye className="h-12 w-12 text-gray-600 mx-auto mb-4" />
-                    <p className="text-gray-400 text-sm sm:text-base">Belum ada item di watchlist.</p>
-                    <p className="text-gray-500 text-xs sm:text-sm mt-2">Tambahkan alamat untuk memantaunya!</p>
+                    <Shield className="h-12 w-12 text-gray-600 mx-auto mb-4" />
+                    <p className="text-gray-400 text-sm sm:text-base">Belum ada riwayat audit.</p>
+                    <p className="text-gray-500 text-xs sm:text-sm mt-2">Mulai dengan mengaudit smart contract!</p>
                   </div>
                 )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="watchlist">
+            <Card className="bg-gray-800/50 border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-white text-lg sm:text-xl">Watchlist Monitor</CardTitle>
+                <CardDescription className="text-gray-400 text-sm sm:text-base">
+                  Monitor wallet dan token untuk aktivitas mencurigakan
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <Input
+                    placeholder="0x... alamat wallet atau token"
+                    value={watchlistAddress}
+                    onChange={(e) => setWatchlistAddress(e.target.value)}
+                    className="bg-gray-900 border-gray-600 text-gray-100 text-sm"
+                  />
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Label (opsional)"
+                      value={watchlistLabel}
+                      onChange={(e) => setWatchlistLabel(e.target.value)}
+                      className="bg-gray-900 border-gray-600 text-gray-100 text-sm flex-1"
+                    />
+                    <Button 
+                      onClick={addToWatchlist} 
+                      disabled={addingToWatchlist || !watchlistAddress.trim()}
+                      className="bg-purple-600 hover:bg-purple-700 px-3 sm:px-4"
+                    >
+                      {addingToWatchlist ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Plus className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {watchlist.length > 0 ? (
+                    watchlist.map((item) => (
+                      <div key={item.id} className="flex items-center justify-between p-3 bg-gray-900/50 rounded-lg border border-gray-600 hover:border-gray-500 transition-colors">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white font-mono text-xs sm:text-sm truncate">{item.address}</p>
+                          <p className="text-gray-400 text-xs">{item.label}</p>
+                        </div>
+                        <div className="flex items-center gap-2 ml-2">
+                          <Badge variant={getRiskColor(item.risk_level)} className="text-xs">
+                            {item.risk_level}
+                          </Badge>
+                          <Button 
+                            size="sm" 
+                            variant="ghost" 
+                            onClick={() => removeFromWatchlist(item.id)}
+                            className="text-red-400 hover:text-red-300 h-8 w-8 p-0"
+                          >
+                            <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <Eye className="h-12 w-12 text-gray-600 mx-auto mb-4" />
+                      <p className="text-gray-400 text-sm sm:text-base">Belum ada item di watchlist.</p>
+                      <p className="text-gray-500 text-xs sm:text-sm mt-2">Tambahkan alamat untuk memantaunya!</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
