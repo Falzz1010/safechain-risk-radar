@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,6 +7,7 @@ import { Loader2, Shield, AlertTriangle, CheckCircle, Code, Zap, FileText, Clock
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { getScoreColor } from '@/lib/utils';
 
 interface AuditResult {
   score: string;
@@ -111,15 +111,6 @@ const SmartContractAudit = () => {
       clearInterval(progressInterval);
       setIsAuditing(false);
       setProgress(0);
-    }
-  };
-
-  const getScoreColor = (score: string) => {
-    switch (score) {
-      case 'A': return 'bg-gradient-to-r from-green-500 to-green-600 shadow-green-500/25';
-      case 'B': return 'bg-gradient-to-r from-yellow-500 to-yellow-600 shadow-yellow-500/25';
-      case 'C': return 'bg-gradient-to-r from-red-500 to-red-600 shadow-red-500/25';
-      default: return 'bg-gradient-to-r from-gray-500 to-gray-600 shadow-gray-500/25';
     }
   };
 

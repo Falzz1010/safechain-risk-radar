@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import SmartContractAudit from '@/components/SmartContractAudit';
 import WalletRiskAnalyzer from '@/components/WalletRiskAnalyzer';
 import AuditDetailModal from '@/components/AuditDetailModal';
+import { getScoreColor, formatDate } from '@/lib/utils';
 
 interface AuditRecord {
   id: string;
@@ -258,15 +259,6 @@ const Dashboard = () => {
     }
   };
 
-  const getScoreColor = (score: string) => {
-    switch (score) {
-      case 'A': return 'bg-gradient-to-r from-green-500 to-green-600 shadow-green-500/25';
-      case 'B': return 'bg-gradient-to-r from-yellow-500 to-yellow-600 shadow-yellow-500/25';
-      case 'C': return 'bg-gradient-to-r from-red-500 to-red-600 shadow-red-500/25';
-      default: return 'bg-gradient-to-r from-gray-500 to-gray-600 shadow-gray-500/25';
-    }
-  };
-
   const getRiskColor = (risk: string) => {
     switch (risk) {
       case 'High': return 'destructive';
@@ -274,16 +266,6 @@ const Dashboard = () => {
       case 'Low': return 'outline';
       default: return 'secondary';
     }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   };
 
   const filteredAudits = auditHistory.filter(audit => {
