@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +15,7 @@ import {
   X
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { getScoreColor, formatDate } from '@/lib/utils';
 
 interface AuditRecord {
   id: string;
@@ -38,15 +38,6 @@ const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ audit, isOpen, onCl
 
   if (!audit) return null;
 
-  const getScoreColor = (score: string) => {
-    switch (score) {
-      case 'A': return 'bg-gradient-to-r from-green-500 to-green-600 shadow-green-500/25';
-      case 'B': return 'bg-gradient-to-r from-yellow-500 to-yellow-600 shadow-yellow-500/25';
-      case 'C': return 'bg-gradient-to-r from-red-500 to-red-600 shadow-red-500/25';
-      default: return 'bg-gradient-to-r from-gray-500 to-gray-600 shadow-gray-500/25';
-    }
-  };
-
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'Passed': return <CheckCircle className="h-5 w-5 text-green-400" />;
@@ -54,16 +45,6 @@ const AuditDetailModal: React.FC<AuditDetailModalProps> = ({ audit, isOpen, onCl
       case 'Failed': return <AlertTriangle className="h-5 w-5 text-red-400" />;
       default: return <Shield className="h-5 w-5 text-gray-400" />;
     }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   };
 
   const handleCopyCode = () => {
@@ -82,7 +63,7 @@ AUDIT REPORT
 ============
 
 Contract Name: ${audit.contract_name}
-Audit Date: ${formatDate(audit.created_at)}
+Audit Date: ${formatDate(audit.created_at, 'id-ID', { month: 'long' })}
 Score: ${audit.audit_score}
 Status: ${audit.audit_status}
 Vulnerabilities Found: ${audit.vulnerability_count || 0}
@@ -148,7 +129,7 @@ ${audit.contract_code || 'N/A'}
                   <p className="text-sm text-gray-400">Tanggal Audit</p>
                   <div className="flex items-center gap-2 text-white">
                     <Calendar className="h-4 w-4 text-gray-400" />
-                    {formatDate(audit.created_at)}
+                    {formatDate(audit.created_at, 'id-ID', { month: 'long' })}
                   </div>
                 </div>
               </CardContent>
