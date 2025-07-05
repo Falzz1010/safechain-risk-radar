@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, Wallet, Trash2, Eye, Plus, Loader2, Activity, AlertCircle, Shield, TrendingUp, Zap, Search, Filter, Download, RefreshCw } from 'lucide-react';
+import { User, Wallet, Trash2, Eye, Plus, Loader2, Activity, AlertCircle, Shield, TrendingUp, Zap, Search, Filter, Download, RefreshCw, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
@@ -13,6 +13,7 @@ import Navbar from '@/components/Navbar';
 import { useToast } from '@/hooks/use-toast';
 import SmartContractAudit from '@/components/SmartContractAudit';
 import WalletRiskAnalyzer from '@/components/WalletRiskAnalyzer';
+import AuditDetailModal from '@/components/AuditDetailModal';
 
 interface AuditRecord {
   id: string;
@@ -21,6 +22,7 @@ interface AuditRecord {
   audit_status: string;
   created_at: string;
   vulnerability_count?: number;
+  contract_code?: string;
 }
 
 interface WatchlistItem {
@@ -44,6 +46,8 @@ const Dashboard = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [selectedAudit, setSelectedAudit] = useState<AuditRecord | null>(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -215,6 +219,42 @@ const Dashboard = () => {
       navigate('/auth');
     } catch (error) {
       console.error('Error signing out:', error);
+    }
+  };
+
+  const handleViewAudit = (audit: AuditRecord) => {
+    setSelectedAudit(audit);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleCopyAuditId = (auditId: string) => {
+    navigator.clipboard.writeText(auditId);
+    toast({
+      title: "✅ Berhasil",
+      description: "ID Audit berhasil disalin",
+    });
+  };
+
+  const handleDeleteAudit = async (auditId: string) => {
+    try {
+      const { error } = await supabase
+        .from('audit_history')
+        .delete()
+        .eq('id', auditId);
+
+      if (error) throw error;
+
+      toast({
+        title: "✅ Berhasil",
+        description: "Riwayat audit berhasil dihapus",
+      });
+    } catch (error) {
+      console.error('Error deleting audit:', error);
+      toast({
+        title: "❌ Error",
+        description: "Gagal menghapus riwayat audit",
+        variant: "destructive",
+      });
     }
   };
 
@@ -467,7 +507,7 @@ const Dashboard = () => {
                             <TableHead className="text-gray-300 font-medium">Score</TableHead>
                             <TableHead className="text-gray-300 font-medium">Status</TableHead>
                             <TableHead className="text-gray-300 font-medium hidden sm:table-cell">Vulnerabilities</TableHead>
-                            <TableHead className="text-gray-300 font-medium w-16">Actions</TableHead>
+                            <TableHead className="text-gray-300 font-medium w-32">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -505,13 +545,35 @@ const Dashboard = () => {
                                 </span>
                               </TableCell>
                               <TableCell>
-                                <Button 
-                                  size="sm" 
-                                  variant="ghost" 
-                                  className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-8 w-8 p-0 transition-colors"
-                                >
-                                  <Eye className="h-4 w-4" />
-                                </Button>
+                                <div className="flex items-center gap-1">
+                                  <Button 
+                                    size="sm" 
+                                    variant="ghost" 
+                                    onClick={() => handleViewAudit(audit)}
+                                    className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-8 w-8 p-0 transition-colors"
+                                    title="Lihat Detail"
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="ghost" 
+                                    onClick={() => handleCopyAuditId(audit.id)}
+                                    className="text-gray-400 hover:text-gray-300 hover:bg-gray-500/10 h-8 w-8 p-0 transition-colors"
+                                    title="Copy ID"
+                                  >
+                                    <Copy className="h-4 w-4" />
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="ghost" 
+                                    onClick={() => handleDeleteAudit(audit.id)}
+                                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-8 w-8 p-0 transition-colors"
+                                    title="Hapus"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
                               </TableCell>
                             </TableRow>
                           ))}
@@ -645,6 +707,15 @@ const Dashboard = () => {
           </Tabs>
         </div>
       </div>
+
+      <AuditDetailModal 
+        audit={selectedAudit}
+        isOpen={isDetailModalOpen}
+        onClose={() => {
+          setIsDetailModalOpen(false);
+          setSelectedAudit(null);
+        }}
+      />
 
       <style>
         {`
