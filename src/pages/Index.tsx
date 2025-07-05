@@ -1,4 +1,3 @@
-
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, Zap, Search, BookOpen, ArrowRight, Star, Users, TrendingUp } from 'lucide-react';
@@ -6,8 +5,21 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
 
+// Types
+interface Feature {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+}
+
+interface Stat {
+  icon: React.ComponentType<{ className?: string }>;
+  value: string;
+  label: string;
+}
+
 // Memoize komponen untuk performa yang lebih baik
-const FeatureCard = memo(({ feature, index }: { feature: any; index: number }) => (
+const FeatureCard = memo(({ feature, index }: { feature: Feature; index: number }) => (
   <Card className="group bg-gray-800/40 border-gray-700/50 hover:bg-gray-800/60 transition-all duration-300 hover:scale-105 hover:border-blue-500/30 backdrop-blur-sm h-full">
     <CardHeader className="text-center pb-3 sm:pb-4">
       <div className="mx-auto mb-3 sm:mb-4 p-2 sm:p-3 bg-blue-500/10 rounded-full group-hover:bg-blue-500/20 transition-colors duration-300 w-fit">
@@ -25,7 +37,7 @@ const FeatureCard = memo(({ feature, index }: { feature: any; index: number }) =
   </Card>
 ));
 
-const StatCard = memo(({ stat, index }: { stat: any; index: number }) => (
+const StatCard = memo(({ stat, index }: { stat: Stat; index: number }) => (
   <Card className="bg-gray-800/30 border-gray-700/50 hover:bg-gray-800/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
     <CardContent className="p-4 sm:p-6 text-center">
       <stat.icon className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400 mx-auto mb-2 sm:mb-3" />

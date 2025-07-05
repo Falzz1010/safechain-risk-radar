@@ -1,4 +1,3 @@
-
 import React, { useState, memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,8 +6,16 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle, BookOpen, Shield, CheckCircle, TrendingUp, Users, Lock, Eye, FileText, Zap } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 
+// Types
+interface ScamSign {
+  title: string;
+  description: string;
+  severity: 'high' | 'medium' | 'low';
+  icon: React.ComponentType<{ className?: string }>;
+}
+
 // Memoized components untuk performa
-const ScamSignCard = memo(({ sign, index }: { sign: any; index: number }) => {
+const ScamSignCard = memo(({ sign, index }: { sign: ScamSign; index: number }) => {
   const getSeverityBgColor = (severity: string) => {
     switch (severity) {
       case 'high': return 'bg-red-500/10 border-red-500/20 hover:border-red-500/40';
