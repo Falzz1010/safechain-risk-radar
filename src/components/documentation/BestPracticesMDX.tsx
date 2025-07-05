@@ -64,66 +64,66 @@ const BestPracticesMDX = () => {
 
   const getColorClasses = (color: string) => {
     const colors = {
-      blue: 'bg-blue-900/20 border-blue-500/30 hover:border-blue-500/50 hover:bg-blue-900/30 text-blue-400',
-      green: 'bg-green-900/20 border-green-500/30 hover:border-green-500/50 hover:bg-green-900/30 text-green-400',
-      purple: 'bg-purple-900/20 border-purple-500/30 hover:border-purple-500/50 hover:bg-purple-900/30 text-purple-400',
-      red: 'bg-red-900/20 border-red-500/30 hover:border-red-500/50 hover:bg-red-900/30 text-red-400'
+      blue: 'bg-blue-900/20 border-blue-500/30 hover:border-blue-500/50 text-blue-400',
+      green: 'bg-green-900/20 border-green-500/30 hover:border-green-500/50 text-green-400',
+      purple: 'bg-purple-900/20 border-purple-500/30 hover:border-purple-500/50 text-purple-400',
+      red: 'bg-red-900/20 border-red-500/30 hover:border-red-500/50 text-red-400'
     };
     return colors[color] || colors.blue;
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 md:space-y-8 text-white">
-      <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6 md:mb-8">
-        <Shield className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-blue-400 flex-shrink-0" />
-        <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold text-white">
+    <div className="prose prose-invert max-w-none">
+      <div className="flex items-center gap-2 mb-6">
+        <Shield className="h-6 w-6 text-blue-400" />
+        <h1 className="text-2xl md:text-3xl font-bold text-white m-0">
           Best Practices Keamanan
-        </h3>
+        </h1>
       </div>
 
-      <div className="grid gap-3 sm:gap-4 md:gap-6 lg:gap-8">
+      <div className="space-y-6">
         {practices.map((practice, index) => (
-          <div key={index} className={`${getColorClasses(practice.color)} backdrop-blur-sm p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg border transition-all duration-300 hover:scale-[1.02]`}>
-            <div className="flex items-start space-x-3 sm:space-x-4 mb-3 sm:mb-4">
-              <practice.icon className={`h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 mt-1 flex-shrink-0 ${
+          <section key={index} className={`${getColorClasses(practice.color)} backdrop-blur-sm p-4 md:p-6 rounded-lg border transition-all duration-300`}>
+            <div className="flex items-start gap-3 mb-3">
+              <practice.icon className={`h-5 w-5 mt-1 flex-shrink-0 ${
                 practice.color === 'blue' ? 'text-blue-400' : 
                 practice.color === 'green' ? 'text-green-400' : 
                 practice.color === 'purple' ? 'text-purple-400' : 
                 'text-red-400'
               }`} />
-              <h4 className={`font-semibold text-sm sm:text-base md:text-lg lg:text-xl ${
+              <h2 className={`text-lg md:text-xl font-semibold m-0 ${
                 practice.color === 'blue' ? 'text-blue-400' : 
                 practice.color === 'green' ? 'text-green-400' : 
                 practice.color === 'purple' ? 'text-purple-400' : 
                 'text-red-400'
               }`}>
                 {practice.title}
-              </h4>
+              </h2>
             </div>
-            <ul className="text-gray-300 space-y-2 sm:space-y-3 list-disc list-inside text-xs sm:text-sm md:text-base">
+            <ul className="text-gray-300 space-y-2 list-disc list-inside text-sm md:text-base pl-4">
               {practice.tips.map((tip, tipIndex) => (
                 <li key={tipIndex} className="leading-relaxed">{tip}</li>
               ))}
             </ul>
-          </div>
+          </section>
         ))}
 
-        <div className="bg-green-900/20 backdrop-blur-sm border border-green-500/30 p-4 sm:p-5 md:p-6 lg:p-8 rounded-lg hover:border-green-500/50 hover:bg-green-900/30 transition-all duration-300 hover:scale-[1.02]">
-          <div className="flex items-start space-x-3 sm:space-x-4 mb-4 sm:mb-5">
-            <Wrench className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-green-400 mt-1 flex-shrink-0" />
-            <h4 className="font-semibold text-green-400 text-sm sm:text-base md:text-lg lg:text-xl">
+        <section className="bg-green-900/20 backdrop-blur-sm border border-green-500/30 p-4 md:p-6 rounded-lg hover:border-green-500/50 transition-all duration-300">
+          <div className="flex items-start gap-3 mb-4">
+            <Wrench className="h-5 w-5 text-green-400 mt-1 flex-shrink-0" />
+            <h2 className="text-lg md:text-xl font-semibold text-green-400 m-0">
               Tools Keamanan Recommended
-            </h4>
+            </h2>
           </div>
-          <div className="grid gap-3 sm:gap-4 md:gap-5 sm:grid-cols-1 md:grid-cols-2">
+          <div className="grid gap-3 md:gap-4 grid-cols-1 md:grid-cols-2">
             {tools.map((tool, toolIndex) => (
-              <div key={toolIndex} className="text-gray-300 text-xs sm:text-sm md:text-base">
-                <strong className="text-green-300 block sm:inline">{tool.category}:</strong>
-                <span className="block sm:inline sm:ml-1">{tool.items}</span>
+              <div key={toolIndex} className="text-gray-300 text-sm md:text-base">
+                <span className="text-green-300 font-semibold block md:inline">{tool.category}:</span>
+                <span className="block md:inline md:ml-1">{tool.items}</span>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
