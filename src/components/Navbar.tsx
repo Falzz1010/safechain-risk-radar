@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Shield, Menu, X } from 'lucide-react';
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import DocumentationModal from './DocumentationModal';
 
 const Navbar = () => {
@@ -26,13 +27,18 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-gray-800 shadow-lg">
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between h-14 sm:h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 group flex-shrink-0">
-            <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400 group-hover:text-blue-300 transition-colors duration-200" />
-            <span className="text-lg sm:text-xl font-bold text-white group-hover:text-blue-300 transition-colors duration-200 truncate">
-              SafeChain
-            </span>
-          </Link>
+          {/* Sidebar Trigger */}
+          <div className="flex items-center gap-3">
+            <SidebarTrigger className="text-gray-300 hover:text-white hover:bg-gray-800/50" />
+            
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-2 group flex-shrink-0">
+              <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-400 group-hover:text-blue-300 transition-colors duration-200" />
+              <span className="text-lg sm:text-xl font-bold text-white group-hover:text-blue-300 transition-colors duration-200 truncate">
+                SafeChain
+              </span>
+            </Link>
+          </div>
           
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-4 xl:space-x-6">
