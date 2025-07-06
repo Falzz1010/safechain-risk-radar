@@ -1,12 +1,14 @@
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, Menu, X } from 'lucide-react';
+import { Shield, Menu, X, BarChart3 } from 'lucide-react';
 import DocumentationModal from './DocumentationModal';
+import { useAuth } from '@/hooks/useAuth';
 
 const Navbar = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
   
   const isActive = (path: string) => location.pathname === path;
   
@@ -50,6 +52,35 @@ const Navbar = () => {
               </Link>
             ))}
             
+            {/* Dashboard Link for Authenticated Users */}
+            {user && (
+              <Link
+                to="/dashboard"
+                className={`px-3 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap flex items-center gap-2 ${
+                  isActive('/dashboard')
+                    ? 'text-green-400 bg-green-400/10 border-b-2 border-green-400'
+                    : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
+                }`}
+              >
+                <BarChart3 className="h-4 w-4" />
+                Dashboard
+              </Link>
+            )}
+
+            {/* Auth Link */}
+            {!user && (
+              <Link
+                to="/auth"
+                className={`px-3 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
+                  isActive('/auth')
+                    ? 'text-blue-400 bg-blue-400/10 border-b-2 border-blue-400'
+                    : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
+                }`}
+              >
+                Login
+              </Link>
+            )}
+            
             {/* Documentation Button */}
             <DocumentationModal />
           </div>
@@ -87,6 +118,37 @@ const Navbar = () => {
                   {item.label}
                 </Link>
               ))}
+              
+              {/* Mobile Dashboard Link for Authenticated Users */}
+              {user && (
+                <Link
+                  to="/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`px-3 py-2 sm:py-3 text-sm font-medium transition-all duration-200 rounded-md flex items-center gap-2 ${
+                    isActive('/dashboard')
+                      ? 'text-green-400 bg-green-400/10'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
+                  }`}
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  Dashboard
+                </Link>
+              )}
+
+              {/* Mobile Auth Link */}
+              {!user && (
+                <Link
+                  to="/auth"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`px-3 py-2 sm:py-3 text-sm font-medium transition-all duration-200 rounded-md ${
+                    isActive('/auth')
+                      ? 'text-blue-400 bg-blue-400/10'
+                      : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
+                  }`}
+                >
+                  Login
+                </Link>
+              )}
               
               {/* Mobile Documentation Button */}
               <div className="pt-2 md:hidden">
