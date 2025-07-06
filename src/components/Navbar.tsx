@@ -37,12 +37,12 @@ const Navbar = () => {
           </Link>
           
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+          <div className="hidden lg:flex items-center space-x-3 xl:space-x-4">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-3 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
+                className={`px-2 xl:px-3 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
                   isActive(item.path)
                     ? 'text-blue-400 bg-blue-400/10 border-b-2 border-blue-400'
                     : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
@@ -56,14 +56,14 @@ const Navbar = () => {
             {user && (
               <Link
                 to="/dashboard"
-                className={`px-3 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap flex items-center gap-2 ${
+                className={`px-2 xl:px-3 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap flex items-center gap-2 ${
                   isActive('/dashboard')
                     ? 'text-green-400 bg-green-400/10 border-b-2 border-green-400'
                     : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
                 }`}
               >
                 <BarChart3 className="h-4 w-4" />
-                Dashboard
+                <span className="hidden xl:inline">Dashboard</span>
               </Link>
             )}
 
@@ -71,7 +71,7 @@ const Navbar = () => {
             {!user && (
               <Link
                 to="/auth"
-                className={`px-3 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
+                className={`px-2 xl:px-3 py-2 text-sm font-medium transition-all duration-200 rounded-md whitespace-nowrap ${
                   isActive('/auth')
                     ? 'text-blue-400 bg-blue-400/10 border-b-2 border-blue-400'
                     : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
@@ -93,7 +93,7 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
-            className="lg:hidden p-2 text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md transition-colors duration-200 flex-shrink-0"
+            className="lg:hidden p-2 text-gray-300 hover:text-white hover:bg-gray-800/50 rounded-md transition-colors duration-200 flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
             aria-label="Toggle mobile menu"
           >
             {isMobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
@@ -109,7 +109,7 @@ const Navbar = () => {
                   key={item.path}
                   to={item.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`px-3 py-2 sm:py-3 text-sm font-medium transition-all duration-200 rounded-md ${
+                  className={`px-3 py-3 sm:py-3 text-sm font-medium transition-all duration-200 rounded-md min-h-[44px] flex items-center touch-manipulation ${
                     isActive(item.path)
                       ? 'text-blue-400 bg-blue-400/10'
                       : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
@@ -124,7 +124,7 @@ const Navbar = () => {
                 <Link
                   to="/dashboard"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`px-3 py-2 sm:py-3 text-sm font-medium transition-all duration-200 rounded-md flex items-center gap-2 ${
+                  className={`px-3 py-3 sm:py-3 text-sm font-medium transition-all duration-200 rounded-md flex items-center gap-2 min-h-[44px] touch-manipulation ${
                     isActive('/dashboard')
                       ? 'text-green-400 bg-green-400/10'
                       : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
@@ -140,7 +140,7 @@ const Navbar = () => {
                 <Link
                   to="/auth"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`px-3 py-2 sm:py-3 text-sm font-medium transition-all duration-200 rounded-md ${
+                  className={`px-3 py-3 sm:py-3 text-sm font-medium transition-all duration-200 rounded-md min-h-[44px] flex items-center touch-manipulation ${
                     isActive('/auth')
                       ? 'text-blue-400 bg-blue-400/10'
                       : 'text-gray-300 hover:text-white hover:bg-gray-800/50'
