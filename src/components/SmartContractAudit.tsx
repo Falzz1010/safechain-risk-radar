@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Shield, AlertTriangle, CheckCircle, Code, Zap, FileText, Clock, TrendingUp } from 'lucide-react';
+import { Loader2, Shield, AlertTriangle, CheckCircle, Code, Zap, FileText, Clock, TrendingUp, Activity } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -24,6 +25,15 @@ const SmartContractAudit = () => {
   const [isAuditing, setIsAuditing] = useState(false);
   const [auditResult, setAuditResult] = useState<AuditResult | null>(null);
   const [progress, setProgress] = useState(0);
+  const [currentStage, setCurrentStage] = useState('');
+
+  const auditStages = [
+    { name: 'Parsing Contract', duration: 1000 },
+    { name: 'Security Analysis', duration: 2000 },
+    { name: 'Vulnerability Detection', duration: 1500 },
+    { name: 'AI Assessment', duration: 2000 },
+    { name: 'Generating Report', duration: 1000 }
+  ];
 
   const handleAudit = async () => {
     if (!contractCode.trim() || !contractName.trim() || !user) return;
@@ -31,19 +41,42 @@ const SmartContractAudit = () => {
     setIsAuditing(true);
     setAuditResult(null);
     setProgress(0);
+    setCurrentStage('');
 
-    // Simulate progress
+    // Real-time progress simulation with stages
+    let currentProgress = 0;
+    let stageIndex = 0;
+
     const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 90) {
-          clearInterval(progressInterval);
-          return 90;
+      if (stageIndex < auditStages.length) {
+        const stage = auditStages[stageIndex];
+        setCurrentStage(stage.name);
+        
+        const stageProgress = 100 / auditStages.length;
+        const targetProgress = (stageIndex + 1) * stageProgress;
+        
+        if (currentProgress < targetProgress - 5) {
+          currentProgress += Math.random() * 8 + 2;
+          setProgress(Math.min(currentProgress, targetProgress - 5));
+        } else {
+          setTimeout(() => {
+            stageIndex++;
+            if (stageIndex >= auditStages.length) {
+              setProgress(95);
+              setCurrentStage('Finalizing Analysis...');
+            }
+          }, stage.duration);
         }
-        return prev + Math.random() * 15;
-      });
-    }, 500);
+      }
+    }, 200);
 
     try {
+      // Show immediate feedback
+      toast({
+        title: "🤖 AI Analysis Started",
+        description: `Analyzing ${contractName} with advanced security AI`,
+      });
+
       const { data: aiResponse, error: aiError } = await supabase.functions.invoke('gemini-analysis', {
         body: {
           prompt: 'Lakukan audit keamanan komprehensif pada smart contract ini dan berikan score A-F dengan analisis detail',
@@ -77,11 +110,16 @@ const SmartContractAudit = () => {
         analysis: aiResponse.analysis || 'Analisis tidak tersedia'
       };
 
+      // Complete progress animation
+      clearInterval(progressInterval);
       setProgress(100);
+      setCurrentStage('Analysis Complete');
+      
       setTimeout(() => {
         setAuditResult(result);
       }, 500);
 
+      // Save to database with real-time update
       const { error: dbError } = await supabase
         .from('audit_history')
         .insert({
@@ -95,22 +133,26 @@ const SmartContractAudit = () => {
 
       if (dbError) throw dbError;
 
+      // Enhanced success notification
       toast({
-        title: "🎉 Audit Selesai",
-        description: `Smart contract ${contractName} berhasil diaudit dengan score ${score}`,
+        title: "✅ AI Analysis Complete",
+        description: `Smart contract "${contractName}" analyzed successfully with score ${score}`,
+        duration: 5000,
       });
 
     } catch (error) {
       console.error('Error during audit:', error);
+      clearInterval(progressInterval);
+      
       toast({
-        title: "❌ Error",
-        description: "Gagal melakukan audit smart contract",
+        title: "❌ Analysis Failed",
+        description: "AI analysis encountered an error. Please try again.",
         variant: "destructive",
       });
     } finally {
-      clearInterval(progressInterval);
       setIsAuditing(false);
       setProgress(0);
+      setCurrentStage('');
     }
   };
 
@@ -129,10 +171,20 @@ const SmartContractAudit = () => {
         <CardTitle className="text-white flex items-center gap-3">
           <div className="p-2 bg-blue-500/10 rounded-lg">
             <Shield className="h-5 w-5 text-blue-400" />
+            {isAuditing && <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>}
           </div>
           <div>
-            <span className="text-xl">Smart Contract Audit</span>
-            <p className="text-sm text-gray-400 font-normal mt-1">AI-Powered Security Analysis</p>
+            <span className="text-xl">AI Smart Contract Audit</span>
+            <p className="text-sm text-gray-400 font-normal mt-1">
+              {isAuditing ? (
+                <span className="flex items-center gap-2">
+                  <Activity className="h-3 w-3 animate-pulse text-green-400" />
+                  AI Analysis in Progress
+                </span>
+              ) : (
+                'Advanced Security Analysis'
+              )}
+            </p>
           </div>
         </CardTitle>
       </CardHeader>
@@ -150,6 +202,7 @@ const SmartContractAudit = () => {
               value={contractName}
               onChange={(e) => setContractName(e.target.value)}
               className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600 rounded-lg text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-500"
+              disabled={isAuditing}
             />
           </div>
           
@@ -163,6 +216,7 @@ const SmartContractAudit = () => {
               value={contractCode}
               onChange={(e) => setContractCode(e.target.value)}
               className="bg-gray-900/50 border-gray-600 text-gray-100 min-h-[200px] font-mono text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+              disabled={isAuditing}
             />
             <div className="flex justify-between items-center text-xs text-gray-500">
               <span>{contractCode.length} characters</span>
@@ -171,37 +225,41 @@ const SmartContractAudit = () => {
           </div>
           
           {isAuditing && (
-            <div className="space-y-3 p-4 bg-blue-500/5 rounded-lg border border-blue-500/20">
+            <div className="space-y-3 p-4 bg-blue-500/5 rounded-lg border border-blue-500/20 animate-fade-in">
               <div className="flex items-center gap-2 text-blue-400">
-                <Clock className="h-4 w-4" />
-                <span className="text-sm font-medium">Analyzing Security...</span>
+                <Activity className="h-4 w-4 animate-pulse" />
+                <span className="text-sm font-medium">AI Security Analysis</span>
+                <div className="ml-auto text-xs text-gray-400">{Math.round(progress)}%</div>
               </div>
-              <div className="w-full bg-gray-700 rounded-full h-2">
+              <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
                 <div 
                   className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
-              <p className="text-xs text-gray-400">
-                AI sedang menganalisis smart contract untuk kerentanan keamanan...
-              </p>
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-3 w-3 animate-spin text-blue-400" />
+                <p className="text-xs text-gray-400">
+                  {currentStage || 'Initializing AI analysis...'}
+                </p>
+              </div>
             </div>
           )}
           
           <Button 
             onClick={handleAudit}
             disabled={isAuditing || !contractCode.trim() || !contractName.trim()}
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg shadow-blue-500/25 h-12 text-base font-medium"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg shadow-blue-500/25 h-12 text-base font-medium disabled:opacity-50"
           >
             {isAuditing ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                Mengaudit dengan AI Gemini...
+                AI Analyzing ({Math.round(progress)}%)
               </>
             ) : (
               <>
                 <Zap className="h-5 w-5 mr-2" />
-                Mulai Audit Keamanan
+                Start AI Security Audit
               </>
             )}
           </Button>
@@ -212,10 +270,10 @@ const SmartContractAudit = () => {
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold text-white flex items-center gap-2">
                 {getStatusIcon(auditResult.status)}
-                Hasil Audit
+                AI Analysis Results
               </h3>
               <Badge className={`${getScoreColor(auditResult.score)} text-white font-bold text-base px-4 py-2 shadow-lg border-0`}>
-                Score: {auditResult.score}
+                AI Score: {auditResult.score}
               </Badge>
             </div>
             
@@ -232,23 +290,23 @@ const SmartContractAudit = () => {
                 <div className="flex items-center justify-center mb-2">
                   <AlertTriangle className="h-5 w-5 text-orange-400" />
                 </div>
-                <p className="text-gray-400 text-sm">Kerentanan</p>
+                <p className="text-gray-400 text-sm">Vulnerabilities</p>
                 <p className="text-white font-semibold text-lg">{auditResult.vulnerabilities}</p>
               </div>
               
               <div className="text-center p-4 bg-gray-800/50 rounded-lg border border-gray-700/50">
                 <div className="flex items-center justify-center mb-2">
-                  <TrendingUp className="h-5 w-5 text-blue-400" />
+                  <Activity className="h-5 w-5 text-green-400" />
                 </div>
-                <p className="text-gray-400 text-sm">Confidence</p>
+                <p className="text-gray-400 text-sm">AI Confidence</p>
                 <p className="text-white font-semibold text-lg">98%</p>
               </div>
             </div>
             
             <div className="bg-gray-800/30 p-4 rounded-lg border border-gray-700/30">
               <div className="flex items-center gap-2 mb-3">
-                <FileText className="h-4 w-4 text-blue-400" />
-                <p className="text-gray-300 font-medium">Analisis AI Gemini:</p>
+                <Activity className="h-4 w-4 text-blue-400" />
+                <p className="text-gray-300 font-medium">AI Security Analysis:</p>
               </div>
               <div className="text-gray-200 text-sm whitespace-pre-wrap max-h-60 overflow-y-auto custom-scrollbar leading-relaxed">
                 {auditResult.analysis}
