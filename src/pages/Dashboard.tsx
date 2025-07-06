@@ -9,11 +9,11 @@ import { User, Wallet, Trash2, Eye, Plus, Loader2, Activity, AlertCircle, Shield
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import Navbar from '@/components/Navbar';
 import { useToast } from '@/hooks/use-toast';
 import SmartContractAudit from '@/components/SmartContractAudit';
 import WalletRiskAnalyzer from '@/components/WalletRiskAnalyzer';
 import AuditDetailModal from '@/components/AuditDetailModal';
+import DashboardLayout from '@/components/DashboardLayout';
 import { getScoreColor, formatDate } from '@/lib/utils';
 
 interface AuditRecord {
@@ -336,11 +336,9 @@ const Dashboard = () => {
   ];
 
   return (
-    <>
+    <DashboardLayout>
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
-        <Navbar />
-        
-        <div className="container mx-auto px-4 lg:px-6 pt-20 sm:pt-24 pb-12">
+        <div className="container mx-auto px-4 lg:px-6 pt-8 pb-12">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8 animate-fade-in">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
@@ -717,7 +715,7 @@ const Dashboard = () => {
           }
         `}
       </style>
-    </>
+    </DashboardLayout>
   );
 };
 
