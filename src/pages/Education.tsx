@@ -1,3 +1,4 @@
+
 import React, { useState, memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -68,37 +69,37 @@ const Education = () => {
     {
       title: 'Imbal Hasil Tidak Realistis',
       description: 'Menjanjikan keuntungan tinggi yang terjamin (>100% APY) tanpa risiko apapun',
-      severity: 'high',
+      severity: 'high' as const,
       icon: TrendingUp
     },
     {
       title: 'Tim Anonim',
       description: 'Tidak ada informasi tim, profil palsu, atau foto tim yang dicopy-paste',
-      severity: 'high',
+      severity: 'high' as const,
       icon: Users
     },
     {
       title: 'Tidak Ada Liquidity Lock',
       description: 'Developer dapat menarik likuiditas kapan saja (risiko rug pull)',
-      severity: 'high',
+      severity: 'high' as const,
       icon: Lock
     },
     {
       title: 'Kontrak Honeypot',
       description: 'Anda bisa membeli token tetapi tidak bisa menjualnya',
-      severity: 'medium',
+      severity: 'medium' as const,
       icon: Eye
     },
     {
       title: 'Tidak Ada Laporan Audit',
       description: 'Smart contract belum diaudit oleh firma audit terpercaya',
-      severity: 'medium',
+      severity: 'medium' as const,
       icon: FileText
     },
     {
       title: 'Fokus Marketing Berlebihan',
       description: 'Lebih fokus pada hype dan marketing daripada pengembangan produk',
-      severity: 'low',
+      severity: 'low' as const,
       icon: Zap
     }
   ];
